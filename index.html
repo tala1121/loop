@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FocusFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-mode="focus" data-view="timer">
+
+  <!-- Ambient stage: dot grid + breathing glow -->
+  <div class="stage-bg" aria-hidden="true">
+    <span class="glow glow-1"></span>
+    <span class="glow glow-2"></span>
+    <span class="vignette"></span>
+  </div>
+
+  <!-- HUD -->
+  <header class="hud">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">FocusFlow</span>
+    </div>
+    <button id="zenBtn" class="hud-btn" title="Zen mode  ·  F" aria-label="Zen mode">
+      <svg viewBox="0 0 24 24"><path d="M21 12.8A8.6 8.6 0 1 1 11.2 3a6.8 6.8 0 0 0 9.8 9.8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </header>
+
+  <main class="stage">
+
+    <!-- ============ TIMER VIEW ============ -->
+    <section class="view view-timer" id="viewTimer">
+
+      <div class="mode-chips" role="tablist">
+        <span class="chip-glider" id="chipGlider"></span>
+        <button class="mode-chip is-active" data-set="focus" role="tab">Focus</button>
+        <button class="mode-chip" data-set="short" role="tab">Short</button>
+        <button class="mode-chip" data-set="long" role="tab">Long</button>
+      </div>
+
+      <div class="dial" id="dial">
+        <div class="dial-ticks" id="dialTicks"></div>
+        <div class="dial-core glass">
+          <div class="matrix-time" id="matrixTime" aria-live="off"></div>
+          <div id="sessionLabel" class="session-label">time to focus</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="resetBtn" class="ctl-btn" title="Reset  ·  R" aria-label="Reset">
+          <svg viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 2 6.5M4 10V5m0 5h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button id="startBtn" class="start-pill" aria-label="Start">
+          <svg class="ic-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5Z"/></svg>
+          <svg class="ic-pause" viewBox="0 0 24 24"><path d="M7.5 5h3v14h-3zM13.5 5h3v14h-3z"/></svg>
+          <span id="startLabel">Start</span>
+        </button>
+        <button id="skipBtn" class="ctl-btn" title="Skip  ·  S" aria-label="Skip">
+          <svg viewBox="0 0 24 24"><path d="M6 6l7 6-7 6V6zm9 0h2v12h-2z" fill="currentColor" stroke="none"/></svg>
+        </button>
+      </div>
+
+      <!-- Session length ruler -->
+      <div class="ruler-wrap" id="rulerWrap">
+        <div class="ruler-value" id="rulerValue">25<em>min</em></div>
+        <div class="ruler" id="ruler">
+          <div class="ruler-bar">
+            <div class="ruler-fill" id="rulerFill"></div>
+            <div class="ruler-handle" id="rulerHandle"></div>
+          </div>
+          <div class="ruler-ticks" id="rulerTicks"></div>
+        </div>
+        <div class="ruler-hint">drag to set session length</div>
+      </div>
+
+      <div class="chips-row">
+        <div class="stat-chip"><span class="k">Round</span><span class="v" id="roundCount">1<i>/4</i></span></div>
+        <div class="stat-chip"><span class="k">Today</span><span class="v" id="focusedToday">0<i>min</i></span></div>
+        <div class="stat-chip"><span class="k">Streak</span><span class="v" id="streakChip">0<i>days</i></span></div>
+      </div>
+    </section>
+
+    <!-- ============ TASKS VIEW ============ -->
+    <section class="view view-tasks" id="viewTasks">
+      <div class="panel glass">
+        <div class="panel-head">
+          <h2>Tasks</h2>
+          <span id="taskSummary" class="panel-sub">0/0 done</span>
+        </div>
+        <form id="taskForm" class="task-form">
+          <input id="taskInput" type="text" placeholder="What are you working on?" aria-label="New task" maxlength="120" autocomplete="off" />
+          <div class="stepper" id="pomoStepper">
+            <button type="button" class="step-btn" data-step="-1" aria-label="Fewer sessions">−</button>
+            <span id="pomoCount" title="Estimated focus sessions">1</span>
+            <button type="button" class="step-btn" data-step="1" aria-label="More sessions">+</button>
+          </div>
+          <button type="submit" class="add-btn" aria-label="Add task">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+          </button>
+        </form>
+        <ul id="taskList" class="task-list"></ul>
+        <p id="emptyTasks" class="empty-tasks">Nothing yet. Add a task, then tap it to make it the active one — finished focus sessions fill its dots.</p>
+      </div>
+    </section>
+
+    <!-- ============ STATS VIEW ============ -->
+    <section class="view view-stats" id="viewStats">
+      <div class="stat-grid">
+        <div class="stat-card glass"><div id="statToday" class="stat-num">0<i>m</i></div><div class="stat-cap">focused today</div></div>
+        <div class="stat-card glass"><div id="statSessions" class="stat-num">0</div><div class="stat-cap">sessions today</div></div>
+        <div class="stat-card glass"><div id="statTotal" class="stat-num">0<i>h</i></div><div class="stat-cap">all-time focus</div></div>
+        <div class="stat-card glass"><div id="statStreak" class="stat-num">0<i>d</i></div><div class="stat-cap">day streak</div></div>
+      </div>
+      <div class="panel glass week-panel">
+        <div class="panel-head"><h2>Last 7 days</h2><span class="panel-sub" id="weekTotal"></span></div>
+        <div id="weekBars" class="week-bars"></div>
+      </div>
+    </section>
+
+    <!-- ============ SETTINGS VIEW ============ -->
+    <section class="view view-settings" id="viewSettings">
+      <div class="panel glass">
+        <div class="panel-head"><h2>Settings</h2></div>
+
+        <div class="setting-row">
+          <div class="setting-info"><span class="setting-label">Rounds before long break</span><small>focus sessions per cycle</small></div>
+          <div class="stepper" id="roundsStepper">
+            <button type="button" class="step-btn" data-step="-1">−</button>
+            <span id="roundsCount">4</span>
+            <button type="button" class="step-btn" data-step="1">+</button>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info"><span class="setting-label">Auto-start next session</span><small>flow straight into breaks &amp; focus</small></div>
+          <button class="switch" id="autoSwitch" role="switch" aria-checked="false" aria-label="Auto-start next session"><span class="knob"></span></button>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info"><span class="setting-label">Sound</span><small>ticks &amp; session chimes</small></div>
+          <button class="switch" id="soundSwitch" role="switch" aria-checked="true" aria-label="Sound"><span class="knob"></span></button>
+        </div>
+
+        <div class="setting-note">Session lengths live under the timer — drag the ruler.</div>
+
+        <button id="resetStats" class="danger-btn">Reset all stats</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating dock -->
+  <nav class="dock glass" id="dock">
+    <span class="dock-bubble" id="dockBubble"></span>
+    <button class="dock-btn is-active" data-view="timer" title="Timer" aria-label="Timer">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 9.5V13l2.5 2M10 2.5h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+    <button class="dock-btn" data-view="tasks" title="Tasks" aria-label="Tasks">
+      <svg viewBox="0 0 24 24"><path d="M4 6.5l1.5 1.5L8.5 5M4 12.5l1.5 1.5L8.5 11M4 18.5l1.5 1.5L8.5 17M12 7h8M12 13h8M12 19h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="dock-btn" data-view="stats" title="Stats" aria-label="Stats">
+      <svg viewBox="0 0 24 24"><path d="M5 20V13M12 20V6M19 20v-4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+    </button>
+    <button class="dock-btn" data-view="settings" title="Settings" aria-label="Settings">
+      <svg viewBox="0 0 24 24"><path d="M4 8h10M18 8h2M4 16h2M10 16h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="16" cy="8" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8" cy="16" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+    </button>
+  </nav>
+
+  <div class="zen-hint" id="zenHint">space to start &nbsp;·&nbsp; esc to exit</div>
+
+  <script src="app.js"></script>
+</body>
+</html>
