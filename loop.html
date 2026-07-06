@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="FocusFlow — A beautiful pomodoro timer with tasks, stats, and zen mode." />
+  <meta name="description" content="Loop — A beautiful pomodoro timer with tasks, stats, and zen mode." />
   <meta name="theme-color" content="#070808" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="format-detection" content="telephone=no" />
-  <title>FocusFlow</title>
+  <title>Loop</title>
 
 <style>
 /* ============================================================
-   FocusFlow — carbon glass instrument
+   Loop — carbon glass instrument
    dot-grid stage · tick-bezel dial · dot-matrix time · ruler
    ============================================================ */
 
@@ -623,7 +623,7 @@ body.flash .stage-bg .glow { opacity: 0.5; transition: opacity 0.15s; }
   <header class="hud">
     <div class="brand">
       <span class="brand-dot"></span>
-      <span class="brand-name">FocusFlow</span>
+      <span class="brand-name">Loop</span>
     </div>
     <button id="zenBtn" class="hud-btn" title="Zen mode  ·  F" aria-label="Zen mode">
       <svg viewBox="0 0 24 24"><path d="M21 12.8A8.6 8.6 0 1 1 11.2 3a6.8 6.8 0 0 0 9.8 9.8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -772,12 +772,12 @@ body.flash .stage-bg .glow { opacity: 0.5; transition: opacity 0.15s; }
   <div class="zen-hint" id="zenHint">space to start &nbsp;·&nbsp; esc to exit</div>
 
 <script>
-  /* FocusFlow — carbon glass instrument.
+  /* Loop — carbon glass instrument.
    Pure vanilla JS, persisted to localStorage. No build step. */
 (() => {
   'use strict';
 
-  const STORE_KEY = 'focusflow.v1';
+  const STORE_KEY = 'loop.v1';
   const MODE_LABELS = { focus: 'time to focus', short: 'short break', long: 'long break' };
   const MODE_TAB_LABELS = { focus: 'Focus', short: 'Short Break', long: 'Long Break' };
   const RULER_RANGE = { focus: [5, 90], short: [1, 30], long: [5, 45] };
@@ -1024,7 +1024,7 @@ body.flash .stage-bg .glow { opacity: 0.5; transition: opacity 0.15s; }
     renderMatrix(time);
     renderDial();
     renderRulerProgress();
-    document.title = state.running ? `${time} — ${MODE_TAB_LABELS[state.mode]}` : 'FocusFlow';
+    document.title = state.running ? `${time} — ${MODE_TAB_LABELS[state.mode]}` : 'Loop';
 
     els.startLabel.textContent = state.running ? 'Pause' : 'Start';
     els.roundCount.innerHTML = `${state.round}<i>/${state.settings.rounds}</i>`;
@@ -1416,7 +1416,7 @@ body.flash .stage-bg .glow { opacity: 0.5; transition: opacity 0.15s; }
     try {
       const msg = state.mode === 'focus' ? 'Focus session done — take a break.' : 'Break over — back to focus.';
       if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-        new Notification('FocusFlow', { body: msg });
+        new Notification('Loop', { body: msg });
       }
     } catch (e) { /* Notifications not available in Quick Look */ }
   }

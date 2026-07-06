@@ -1,10 +1,10 @@
-# FocusFlow
+# Loop
 
 A small, beautiful focus timer built to test a UI direction before committing it to a much larger product.
 
 Carbon glass surface, a tick-bezel dial, dot-matrix time, and a draggable ruler to set session length. Pomodoro at its core, with tasks, stats, streaks, and a distraction-free zen mode.
 
-**Live site:** https://tala1121.github.io/focusflow/
+**Live site:** https://tala1121.github.io/loop/
 
 ## Why this exists
 
@@ -21,12 +21,12 @@ I had a UI vision I wanted for a bigger main product, but I did not want to gamb
 
 ## Run it
 
-Open `index.html` in a browser, or open the single-file build `focusflow.html` on its own. No build step, no dependencies.
+Open `index.html` in a browser, or open the single-file build `loop.html` on its own. No build step, no dependencies.
 
 ## Files
 
 - `index.html`, `styles.css`, `app.js` — the split build
-- `focusflow.html` — the whole app in one file
+- `loop.html` — the whole app in one file
 
 ## Built with
 

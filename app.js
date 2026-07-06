@@ -1,9 +1,9 @@
-  /* FocusFlow — carbon glass instrument.
+  /* Loop — carbon glass instrument.
    Pure vanilla JS, persisted to localStorage. No build step. */
 (() => {
   'use strict';
 
-  const STORE_KEY = 'focusflow.v1';
+  const STORE_KEY = 'loop.v1';
   const MODE_LABELS = { focus: 'time to focus', short: 'short break', long: 'long break' };
   const MODE_TAB_LABELS = { focus: 'Focus', short: 'Short Break', long: 'Long Break' };
   const RULER_RANGE = { focus: [5, 90], short: [1, 30], long: [5, 45] };
@@ -230,7 +230,7 @@
     renderMatrix(time);
     renderDial();
     renderRulerProgress();
-    document.title = state.running ? `${time} — ${MODE_TAB_LABELS[state.mode]}` : 'FocusFlow';
+    document.title = state.running ? `${time} — ${MODE_TAB_LABELS[state.mode]}` : 'Loop';
 
     els.startLabel.textContent = state.running ? 'Pause' : 'Start';
     els.roundCount.innerHTML = `${state.round}<i>/${state.settings.rounds}</i>`;
@@ -612,7 +612,7 @@
   function notify() {
     const msg = state.mode === 'focus' ? 'Focus session done — take a break.' : 'Break over — back to focus.';
     if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification('FocusFlow', { body: msg });
+      new Notification('Loop', { body: msg });
     }
   }
 
